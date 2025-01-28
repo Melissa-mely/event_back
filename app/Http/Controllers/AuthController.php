@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 class AuthController extends Controller
 {
@@ -103,53 +105,72 @@ public function logout(Request $request)
 public function updateProfile(Request $request)
 {
     try {
-        // Validation des données entrantes
-        $request->validate([
-            'username' => 'sometimes|string|max:50',
-            'email' => 'sometimes|email|max:255|unique:users,email,' . auth()->id(),
-            'password' => 'sometimes|string|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
+        // Récupérer l'utilisateur authentifié
         $user = auth()->user();
 
-        // Mise à jour des informations du profil
-        if ($request->has('username')) {
-            $user->username = $request->username;
-        }
-        if ($request->has('email')) {
-            $user->email = $request->email;
-        }
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->password);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Utilisateur non trouvé',
+            ], 404);
         }
 
-        // Gestion de la photo de profil
+        // Log pour voir les données envoyées
+     
+        // Validation des champs
+        $validatedData = $request->validate([
+            'username' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        Log::info('Données reçues :', $request->all());
+
+        // Mise à jour des champs textuels
+        if ($request->has('username')) {
+            $user->username = $request->input('username');
+        }
+
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        // Gestion de l'avatar
         if ($request->hasFile('avatar')) {
-            // Supprimer l'ancienne photo s'il y en a une
+            // Supprimer l'ancienne photo si elle existe
+            Log::info('Fichier avatar reçu :', $request->file('avatar'));
             if ($user->avatar) {
                 Storage::delete('public/' . $user->avatar);
             }
+
             // Sauvegarder la nouvelle photo
-            $imagePath = $request->file('avatar')->store('avatar', 'public');
+            $imagePath = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $imagePath;
         }
 
+        // Enregistrer les modifications
         $user->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Profil mis à jour avec succès',
-            'user' => $user
+            'user' => $user,
         ]);
-
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
             'message' => 'Erreur lors de la mise à jour du profil',
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
         ], 500);
     }
 }
+
+
+
+
 
 }
