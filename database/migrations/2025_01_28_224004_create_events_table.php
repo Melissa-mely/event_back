@@ -19,7 +19,7 @@ return new class extends Migration
         $table->string('location'); // Lieu de l'événement
         $table->dateTime('date'); // Date de l'événement
         $table->unsignedInteger('max_participants'); // Nombre max de participants
-        $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Relation avec la table categories
+        #$table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Relation avec la table categories
         $table->foreignId('organizer_id')->constrained('users')->onDelete('cascade'); // Organisateur de l'événement
         $table->timestamps();
     });
