@@ -25,6 +25,7 @@ Route::post('/login', [AuthController::class, 'login']);
 });*/
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::middleware('auth:sanctum')->put('/update-profile', [AuthController::class, 'updateProfile']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -44,5 +45,5 @@ Route::middleware(['auth:sanctum', 'participant'])->group(function () {
 
 // Accessible à tous les utilisateurs authentifiés
 Route::middleware('auth:sanctum')->get('/events', [EventController::class, 'index']); // Voir tous les événements
-Route::middleware('auth:sanctum')->put('/update-profile', [AuthController::class, 'updateProfile']);
+
 

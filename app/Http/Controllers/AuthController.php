@@ -102,58 +102,70 @@ public function logout(Request $request)
     ]);
 }
 
+
 public function updateProfile(Request $request)
 {
     try {
+        dd($request->all());
+
+        // 🔍 Vérification des données envoyées
+        Log::info('Requête brute :', ['raw' => $request->getContent()]);
+        Log::info('Données reçues (request->all()) :', $request->all());
+        Log::info('Fichiers reçus (request->allFiles()) :', $request->allFiles());
+        
+        
+       
+
+
+
         // Récupérer l'utilisateur authentifié
         $user = auth()->user();
-
+        Log::info('Utilisateur authentifié :', ['user' => $user]);
         if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Utilisateur non trouvé',
             ], 404);
         }
+        Log::info('Données avant validation :', ['data' => $request->all()]);
 
-        // Log pour voir les données envoyées
-     
-        // Validation des champs
+        // 📌 Validation des champs
         $validatedData = $request->validate([
             'username' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        Log::info('Données reçues :', $request->all());
+        Log::info('Nouvelles données reçues :', ['data' => $validatedData]);
+       // Mise à jour des champs textuels
+if ($request->has('username')) {
+    $user->username = $request->input('username'); // Utilise input() au lieu de get()
+}
 
-        // Mise à jour des champs textuels
-        if ($request->has('username')) {
-            $user->username = $request->input('username');
-        }
+if ($request->has('email')) {
+    $user->email = $request->input('email');
+}
 
-        if ($request->has('email')) {
-            $user->email = $request->input('email');
-        }
+if ($request->filled('password')) {
+    $user->password = Hash::make($request->input('password'));
+}
+Log::info('Données avant enregistrement :', ['user' => $user->toArray()]);
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
+// Gestion de l'avatar
+if ($request->hasFile('avatar')) {
+    Log::info('Fichier avatar reçu :', [$request->file('avatar')]);
+    if ($user->avatar) {
+        Storage::delete('public/' . $user->avatar);
+    }
+    $imagePath = $request->file('avatar')->store('avatars', 'public');
+    $user->avatar = $imagePath;
+}
 
-        // Gestion de l'avatar
-        if ($request->hasFile('avatar')) {
-            // Supprimer l'ancienne photo si elle existe
-            Log::info('Fichier avatar reçu :', $request->file('avatar'));
-            if ($user->avatar) {
-                Storage::delete('public/' . $user->avatar);
-            }
+// Enregistrer les modifications
+$user->fill($validatedData);
+$user->save();
 
-            // Sauvegarder la nouvelle photo
-            $imagePath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $imagePath;
-        }
 
-        // Enregistrer les modifications
-        $user->save();
 
         return response()->json([
             'success' => true,
@@ -168,6 +180,7 @@ public function updateProfile(Request $request)
         ], 500);
     }
 }
+
 
 
 
