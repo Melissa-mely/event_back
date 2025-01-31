@@ -30,5 +30,12 @@ class Event extends Model
         return $this->belongsTo(User::class, 'organizer_id');
         
     }
-    
+    // Relation avec les participants (utilisateurs)
+    public function participants()
+{
+    return $this->belongsToMany(User::class, 'event_participant');
+}
+
+ 
+
 }

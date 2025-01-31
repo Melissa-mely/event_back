@@ -19,10 +19,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 
-
-/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});*/
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::middleware('auth:sanctum')->put('/update-profile', [AuthController::class, 'updateProfile']);
@@ -41,6 +37,13 @@ Route::middleware(['auth:sanctum', 'organisateur'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'participant'])->group(function () {
     Route::get('/events', [ParticipantController::class, 'index']); // Accessible uniquement par les participants
+    Route::post('/events/{event}/register', [EventController::class, 'register']); // S'inscrire à un événement
+    Route::delete('/events/{event}/unregister', [EventController::class, 'unregister']); // Se désinscrire d'un événement
+    Route::post('/events/{event}/favorite', [EventController::class, 'addFavorite']);//ajouter un evenement en favoris
+    Route::delete('/events/{event}/unfavorite', [EventController::class, 'removeFavorite']);//retirer un evenement des favoris
+    Route::get('/my-events', [EventController::class, 'myEvents']); // Voir les événements aux quels je me suis inscrit
+    Route::get('/my-favorites', [EventController::class, 'myFavorites']);   // Voir les événements en favoris
+
 });
 
 // Accessible à tous les utilisateurs authentifiés
