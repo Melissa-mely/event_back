@@ -49,6 +49,12 @@ class User extends Authenticatable
             return $this->belongsToMany(Event::class, 'event_participant');
         }
 
+        //utilisateur  peut avoir plusieurs événements
+        public function events()
+{
+    return $this->hasMany(Event::class, 'organizer_id');
+}
+
 
     /**
      * The attributes that should be cast.

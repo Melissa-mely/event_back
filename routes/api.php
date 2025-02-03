@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\AdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +21,11 @@ use App\Http\Controllers\ParticipantController;
 */
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/events', [IndexController::class, 'index']); // Voir TOUS les événements avce leurs organisateurs et catégories
+Route::get('/events', [IndexController::class, 'index']); // Voir TOUS les événements avec leurs organisateurs et catégories
 Route::get('/events/{id}', [IndexController::class, 'show']);// Voir UN événement avec ses catégories et organisateur
 Route::get('/search', [IndexController::class, 'search']);// Rechercher des événements par mot-clé
 Route::get('/events/by-category/{categoryId}', [IndexController::class, 'filterByCategory']);// Filtrer les événements par catégorie
 Route::get('/upcoming', [IndexController::class, 'getUpcomingEvents']);// Voir les événements à venir
-
-
-
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -35,7 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index']); // Accessible uniquement par les admins
+    Route::delete('/admin/event/{id}', [AdminController::class, 'deleteEvent']); // Supprimer un événement
+    Route::delete('/admin/organizer/{id}', [AdminController::class, 'deleteOrganizer']); // Supprimer un organisateur et ses events
+    Route::get('/organizers', [adminController::class, 'listOrganizers']); // Voir les organisateurs
 });
 
 Route::middleware(['auth:sanctum', 'organisateur'])->group(function () {
