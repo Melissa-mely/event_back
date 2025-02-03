@@ -34,20 +34,20 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-       // Relation avec les favoris (utilisateurs)
+        // Relation avec les favoris (utilisateurs)
 
-public function favorites()
-{
-    return $this->belongsToMany(Event::class, 'favorites');
+        public function favorites()
+        {
+            return $this->belongsToMany(Event::class, 'favorites');
 
 
-}
-  // Relation avec les événements auxquels l'utilisateur a participé
-  
-public function participatedEvents()
-{
-    return $this->belongsToMany(Event::class, 'event_participant');
-}
+        }
+        // Relation avec les événements auxquels l'utilisateur a participé
+        
+        public function participatedEvents()
+        {
+            return $this->belongsToMany(Event::class, 'event_participant');
+        }
 
 
     /**

@@ -107,17 +107,6 @@ public function updateProfile(Request $request)
 {
     try {
         dd($request->all());
-
-        // 🔍 Vérification des données envoyées
-        Log::info('Requête brute :', ['raw' => $request->getContent()]);
-        Log::info('Données reçues (request->all()) :', $request->all());
-        Log::info('Fichiers reçus (request->allFiles()) :', $request->allFiles());
-        
-        
-       
-
-
-
         // Récupérer l'utilisateur authentifié
         $user = auth()->user();
         Log::info('Utilisateur authentifié :', ['user' => $user]);
