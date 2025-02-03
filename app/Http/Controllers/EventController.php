@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class EventController extends Controller
 {
@@ -35,13 +36,25 @@ class EventController extends Controller
         }
 
         // Gérer l'image
-        $path = $request->file('image')->store('events', 'public');
+       # $path = $request->file('image')->store('events', 'public');
+        // Gérer l'upload vers Cloudinary
+if ($request->hasFile('image')) {
+    $uploadedFile = $request->file('image');
+
+    $uploadedImage = Cloudinary::upload($uploadedFile->getRealPath(), [
+        'folder' => 'events'
+    ]);
+
+    $imageUrl = $uploadedImage->getSecurePath();
+} else {
+    $imageUrl = null;
+}
 
         // Créer l'événement
         $event = Event::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $path,
+            'image' => $imageUrl,
             'location' => $request->location,
             'date' => $request->date,
             'max_participants' => $request->max_participants,

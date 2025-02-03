@@ -18,7 +18,6 @@ class AdminController extends Controller
             return response()->json(['error' => 'Événement introuvable'], 404);
         }
 
-        // Supprimer l'événement
         $event->delete();
 
         return response()->json(['message' => 'Événement supprimé avec succès']);
@@ -33,24 +32,23 @@ class AdminController extends Controller
             return response()->json(['error' => 'Organisateur introuvable'], 404);
         }
 
-        // Vérifier si l'utilisateur est bien un organisateur avant de le supprimer
         if ($organizer->role !== 'organisateur') {
             return response()->json(['error' => 'Cet utilisateur n\'est pas un organisateur'], 400);
         }
 
         // Supprimer tous les événements créés par cet organisateur
         $organizer->events()->delete();
-
-        // Supprimer l'organisateur
         $organizer->delete();
 
         return response()->json(['message' => 'Organisateur et ses événements supprimés avec succès']);
     }
 
 
+    // Méthode pour lister tous les organisateurs
+
     public function listOrganizers()
 {
-    // Récupérer tous les utilisateurs qui ont le rôle "organisateur"
+    
     $organizers = User::where('role', 'organisateur')->get();
 
     return response()->json([

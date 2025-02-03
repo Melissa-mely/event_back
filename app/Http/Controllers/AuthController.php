@@ -121,7 +121,7 @@ public function updateProfile(Request $request)
         // 📌 Validation des champs
         $validatedData = $request->validate([
             'username' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'nullable|email|max:50|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

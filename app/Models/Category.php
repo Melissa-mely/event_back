@@ -11,7 +11,7 @@ class Category extends Model
     // Les champs qui peuvent être remplis dans la table
     protected $fillable = ['name'];
 
-    // Relation avec les événements (Many-to-Many)
+    // Relation avec les événements 
     public function events()
     {
         return $this->belongsToMany(Event::class, 'category_event', 'category_id', 'event_id');

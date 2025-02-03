@@ -10,14 +10,13 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
-        // Création de l'administrateur
-        User::create([
-            'username' => 'melissa',
-            'email' => 'melissa19@gmail.com',
-            'password' => Hash::make('commentfiarepourlehasher'), // Remplacez 'password' par un mot de passe sécurisé
-            'role' => 'admin',
-        ]);
-
+        User::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL')], // Vérifie si l'admin existe déjà
+            [
+                'username' => env('ADMIN_USERNAME'),
+                'password' => Hash::make(env('ADMIN_PASSWORD')),
+                'role' => 'admin',
+            ]
+        );
     }
 }
-
