@@ -21,5 +21,10 @@ return [
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'supports_credentials' => true,
+    'paths' => ['api/*'],
+'allowed_methods' => ['*'],
+'allowed_origins' => ['*'],
+'allowed_headers' => ['*'],
+
 
 ];

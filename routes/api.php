@@ -9,6 +9,7 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\AdminController;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,7 +27,7 @@ Route::get('/events/{id}', [IndexController::class, 'show']);// Voir UN événem
 Route::get('/search', [IndexController::class, 'search']);// Rechercher des événements par mot-clé
 Route::get('/events/by-category/{categoryId}', [IndexController::class, 'filterByCategory']);// Filtrer les événements par catégorie
 Route::get('/upcoming', [IndexController::class, 'getUpcomingEvents']);// Voir les événements à venir
-
+Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
