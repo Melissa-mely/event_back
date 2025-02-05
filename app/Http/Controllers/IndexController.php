@@ -18,13 +18,16 @@ class IndexController extends Controller
 
       public function index()
       {
-          // Récupérer tous les événements avec leurs catégories et organisateur
-          $events = Event::with(['categories', 'organizer'])->get();
-      
-          return response()->json([
-              'success' => true,
-              'data' => $events
-          ]);
+       // Récupérer les événements triés par date de création (du plus récent au plus ancien)
+    $events = Event::with(['categories', 'organizer'])
+    ->orderBy('date', 'desc') // Trier par création récente
+    ->take(5) // Prendre les 5 derniers événements créés
+    ->get();
+
+return response()->json([
+    'success' => true,
+    'data' => $events
+]);
       }
        
        // ------------------- voir les details d'un evenément ---------------------------------------

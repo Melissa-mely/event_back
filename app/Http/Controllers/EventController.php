@@ -35,8 +35,6 @@ class EventController extends Controller
             return response()->json(['error' => $validatedData->errors()], 422);
         }
 
-        // Gérer l'image
-       # $path = $request->file('image')->store('events', 'public');
         // Gérer l'upload vers Cloudinary
 if ($request->hasFile('image')) {
     $uploadedFile = $request->file('image');
@@ -68,19 +66,18 @@ if ($request->hasFile('image')) {
     }
 
     // ------------------------------ Modifier un événement------------------------------------
-
     public function update(Request $request, $id)
     {
         $event = Event::find($id);
-
+    
         if (!$event) {
             return response()->json(['error' => 'Événement introuvable'], 404);
         }
-
+    
         if (auth()->user()->id !== $event->organizer_id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
+    
         $validatedData = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
@@ -91,24 +88,40 @@ if ($request->hasFile('image')) {
             'categories' => 'sometimes|array',
             'categories.*' => 'exists:categories,id',
         ]);
-
+    
         if ($validatedData->fails()) {
             return response()->json(['error' => $validatedData->errors()], 422);
         }
-
+    
+        // Vérifier si une nouvelle image est envoyée
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('events', 'public');
-            $event->image = $path;
+            // Supprimer l'ancienne image de Cloudinary (Optionnel : à condition de stocker l'ID public de l'image)
+            if ($event->image) {
+                $publicId = pathinfo($event->image, PATHINFO_FILENAME);
+                Cloudinary::destroy("events/{$publicId}");
+            }
+    
+            // Téléverser la nouvelle image sur Cloudinary
+            $uploadedFile = $request->file('image');
+            $uploadedImage = Cloudinary::upload($uploadedFile->getRealPath(), [
+                'folder' => 'events'
+            ]);
+    
+            // Mettre à jour l'URL de l'image
+            $event->image = $uploadedImage->getSecurePath();
         }
-
-        $event->update($request->except('categories'));
-
+    
+        // Mettre à jour les autres champs
+        $event->update($request->except('categories', 'image'));
+    
+        // Mettre à jour les catégories si fournies
         if ($request->has('categories')) {
             $event->categories()->sync($request->categories);
         }
-
+    
         return response()->json(['message' => 'Événement mis à jour avec succès!', 'event' => $event]);
     }
+    
 
     // ----------------------------- Supprimer un événement------------------------------------
     public function destroy($id)
