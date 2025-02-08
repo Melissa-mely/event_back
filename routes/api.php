@@ -7,6 +7,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrganisateurController;
 
 
 
@@ -28,6 +30,7 @@ Route::get('/search', [IndexController::class, 'search']);// Rechercher des év�
 Route::get('/events/by-category/{categoryId}', [IndexController::class, 'filterByCategory']);// Filtrer les événements par catégorie
 Route::get('/upcoming', [IndexController::class, 'getUpcomingEvents']);// Voir les événements à venir
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);

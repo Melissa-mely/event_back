@@ -64,7 +64,20 @@ if ($request->hasFile('image')) {
 
         return response()->json(['message' => 'Événement créé avec succès!', 'event' => $event]);
     }
+    
+    public function show($id)
+    {
+        // Vérifie si l'événement existe
+        $event = Event::find($id);
 
+        // Si l'événement n'existe pas, retourne une erreur
+        if (!$event) {
+            return response()->json(['error' => 'Événement non trouvé'], 404);
+        }
+
+        // Retourne les détails de l'événement
+        return response()->json(['event' => $event]);
+    }
     // ------------------------------ Modifier un événement------------------------------------
     public function update(Request $request, $id)
     {
