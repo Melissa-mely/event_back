@@ -33,7 +33,6 @@ front (Front-END du projet)
 ## Installation
 **1. Clonez ce dépôt sur votre machine locale**
 git clone https://github.com/Melissa-mely/event_back.git
-front
 _
 cd event
 back/
