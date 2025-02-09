@@ -32,7 +32,7 @@ front (Front-END du projet)
 - https://dev.mysql.com/downloads/installer/
 ## Installation
 **1. Clonez ce dépôt sur votre machine locale**
-git clone https://github.com/ismaelkennedy/eventplatform
+git clone https://github.com/Melissa-mely/event_back.git
 front
 _
 cd event
