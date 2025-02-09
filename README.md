@@ -60,9 +60,9 @@ CLOUDINARY_CLOUD_NAME=dv5zygmp0
 CLOUDINARY_API_KEY=281999173195236
 CLOUDINARY_API_SECRET=8Ghl2TDqLof5ESkFKnBGvOX
 
-ADMIN_USERNAME=melissa
-ADMIN_EMAIL=melissa19@gmail.com
-ADMIN_PASSWORD=adminpassword123
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=yourmail
+ADMIN_PASSWORD=yourpassword
 
 **4. Créer la base de données**
 Si elle n'existe pas encore, crée-la manuellement avec **phpMyAdmin** ou en ligne de commande :
